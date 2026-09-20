@@ -3,492 +3,1127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seminar Penguatkuasaan & Pendakwaan Undang-Undang Kesihatan Awam Tahun 2026</title>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1e3a8a">
+    <title>Seminar Penguatkuasaan & Pendakwaan KKM 2026</title>
+    
+    <!-- PWA Manifest Dynamic Injector -->
+    <script>
+        const manifestData = {
+            "name": "Seminar Penguatkuasaan KKM 2026",
+            "short_name": "Seminar KKM 2026",
+            "start_url": "./",
+            "display": "standalone",
+            "background_color": "#0f172a",
+            "theme_color": "#1e3a8a",
+            "icons": [
+                {
+                    "src": "https://img.icons8.com/color/192/malaysia.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                }
+            ]
+        };
+        const stringManifest = JSON.stringify(manifestData);
+        const blobManifest = new Blob([stringManifest], {type: 'application/json'});
+        const manifestURL = URL.createObjectURL(blobManifest);
+        const link = document.createElement('link');
+        link.rel = 'manifest';
+        link.href = manifestURL;
+        document.head.appendChild(link);
+    </script>
+
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        kkmBlue: '#0f3c7e',
+                        kkmNavy: '#0a2342',
+                        kkmGold: '#d97706',
+                        kkmRed: '#dc2626',
+                        madaniRed: '#e11d48',
+                        madaniYellow: '#fbbf24',
+                        madaniBlue: '#2563eb'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome & Google Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
     <style>
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .cert-font {
+            font-family: 'Playfair Display', serif;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Print Styles for Pass & Certificate */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printable-area, #printable-area * {
+                visibility: visible;
+            }
+            #printable-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 15px;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+
+        .gold-border {
+            border: 8px solid #d97706;
+            border-image: linear-gradient(to bottom right, #b45309, #f59e0b, #78350f) 1;
+        }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col pb-20 md:pb-6">
+<body class="text-slate-800 bg-slate-100 min-h-screen flex flex-col justify-between">
 
-    <!-- HEADER / HERO SECTION -->
-    <header class="bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 text-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-5xl mx-auto p-4 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="bg-white p-1.5 rounded-lg shadow-md flex items-center justify-center">
-                    <i class="fa-solid fa-building-columns text-blue-900 text-xl"></i>
-                </div>
+    <!-- Top Header -->
+    <header class="bg-gradient-to-r from-kkmNavy via-kkmBlue to-slate-900 text-white shadow-xl sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('utama')">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Coat_of_arms_of_Malaysia.svg/250px-Coat_of_arms_of_Malaysia.svg.png" 
+                     alt="JSN Malaysia" 
+                     class="h-12 w-auto filter drop-shadow"
+                     onerror="this.src='https://placehold.co/100x100/1e3a8a/ffffff?text=KKM'">
                 <div>
-                    <span class="text-[10px] font-bold tracking-widest text-yellow-400 uppercase block">Kementerian Kesihatan Malaysia</span>
-                    <h1 class="font-bold text-sm sm:text-base leading-tight">Seminar Penguatkuasaan & Pendakwaan 2026</h1>
+                    <h1 class="text-xs sm:text-sm font-bold tracking-wider text-amber-400 uppercase">Kementerian Kesihatan Malaysia</h1>
+                    <p class="text-xs text-slate-200 font-medium hidden sm:block">Bahagian Perkembangan Kesihatan Awam</p>
                 </div>
             </div>
-            <div class="flex items-center gap-2">
-                <span id="app-status" class="text-[10px] bg-emerald-500 text-white font-semibold px-2.5 py-1 rounded-full flex items-center gap-1 shadow">
-                    <span class="w-1.5 h-1.5 bg-white rounded-full animate-ping"></span> App Ready
+
+            <!-- Install PWA & Status Badge -->
+            <div class="flex items-center space-x-2">
+                <span id="pwaStatus" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                    <span class="w-2 h-2 mr-1.5 bg-emerald-400 rounded-full animate-pulse"></span> App Ready
                 </span>
-            </div>
-        </div>
-    </header>
-
-    <!-- NAVIGATION TABS -->
-    <div class="bg-white border-b border-slate-200 sticky top-[61px] z-40 shadow-sm">
-        <div class="max-w-5xl mx-auto flex overflow-x-auto no-scrollbar text-xs font-bold text-slate-600">
-            <button onclick="showTab('utama')" id="tab-utama" class="tab-btn flex-1 min-w-[90px] py-3 text-center border-b-2 border-blue-900 text-blue-900 bg-blue-50/50">
-                <i class="fa-solid fa-house block text-base mb-1"></i> Utama
-            </button>
-            <button onclick="showTab('aturcara')" id="tab-aturcara" class="tab-btn flex-1 min-w-[90px] py-3 text-center border-b-2 border-transparent">
-                <i class="fa-solid fa-calendar-days block text-base mb-1"></i> Atur Cara
-            </button>
-            <button onclick="showTab('pendaftaran')" id="tab-pendaftaran" class="tab-btn flex-1 min-w-[90px] py-3 text-center border-b-2 border-transparent">
-                <i class="fa-solid fa-clipboard-user block text-base mb-1"></i> Kehadiran
-            </button>
-            <button onclick="showTab('pas')" id="tab-pas" class="tab-btn flex-1 min-w-[90px] py-3 text-center border-b-2 border-transparent">
-                <i class="fa-solid fa-id-card block text-base mb-1"></i> Pas & Sijil
-            </button>
-            <button onclick="showTab('ajk')" id="tab-ajk" class="tab-btn flex-1 min-w-[90px] py-3 text-center border-b-2 border-transparent">
-                <i class="fa-solid fa-users block text-base mb-1"></i> Jawatankuasa
-            </button>
-            <button onclick="showTab('maklumbalas')" id="tab-maklumbalas" class="tab-btn flex-1 min-w-[90px] py-3 text-center border-b-2 border-transparent">
-                <i class="fa-solid fa-comment-dots block text-base mb-1"></i> Maklum Balas
-            </button>
-        </div>
-    </div>
-
-    <!-- MAIN CONTENT CONTAINER -->
-    <main class="max-w-5xl mx-auto p-4 w-full flex-grow space-y-4">
-
-        <!-- TAB 1: UTAMA / HERO -->
-        <section id="sec-utama" class="space-y-4">
-            <div class="bg-gradient-to-br from-blue-950 via-blue-900 to-indigo-950 text-white p-6 sm:p-8 rounded-2xl shadow-xl relative overflow-hidden border border-blue-800">
-                <div class="absolute -right-10 -bottom-10 opacity-10 text-white">
-                    <i class="fa-solid fa-scale-balanced text-9xl"></i>
-                </div>
-                <div class="relative z-10 space-y-3">
-                    <span class="inline-block bg-yellow-400 text-blue-950 text-[11px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
-                        Anjuran Sektor Inspektorat dan Perundangan
-                    </span>
-                    <h2 class="text-xl sm:text-3xl font-extrabold uppercase leading-tight tracking-wide">
-                        SEMINAR PENGUATKUASAAN DAN PENDAKWAAN UNDANG-UNDANG KESIHATAN AWAM TAHUN 2026
-                    </h2>
-                    <p class="text-xs sm:text-sm text-blue-200">
-                        Memperkasakan kompetensi, integriti dan digitalisasi pegawai penguat kuasa kesihatan awam di seluruh Malaysia.
-                    </p>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                        <div class="bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/10 flex items-center gap-3">
-                            <i class="fa-solid fa-calendar-check text-yellow-400 text-xl"></i>
-                            <div>
-                                <span class="text-[10px] text-blue-200 uppercase block font-semibold">Tarikh Seminar</span>
-                                <span class="text-xs font-bold">21 - 22 September 2026</span>
-                            </div>
-                        </div>
-                        <div class="bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/10 flex items-center gap-3">
-                            <i class="fa-solid fa-location-dot text-red-400 text-xl"></i>
-                            <div>
-                                <span class="text-[10px] text-blue-200 uppercase block font-semibold">Lokasi Acara</span>
-                                <span class="text-xs font-bold">Dewan Damar Sari I & II</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="pt-2 flex flex-wrap gap-2">
-                        <button onclick="showTab('pendaftaran')" class="bg-yellow-400 hover:bg-yellow-300 text-blue-950 font-extrabold px-5 py-2.5 rounded-xl text-xs shadow-md transition">
-                            <i class="fa-solid fa-user-check mr-1"></i> Daftar Kehadiran Sekarang
-                        </button>
-                        <button onclick="showTab('aturcara')" class="bg-white/20 hover:bg-white/30 text-white font-bold px-5 py-2.5 rounded-xl text-xs shadow transition border border-white/30">
-                            <i class="fa-solid fa-list-ul mr-1"></i> Lihat Atur Cara
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                    <span class="text-blue-900 font-bold text-xs uppercase block mb-1">Anjuran Rasmi</span>
-                    <h3 class="font-bold text-sm text-slate-800">Sektor Inspektorat dan Perundangan</h3>
-                    <p class="text-xs text-slate-500 mt-1">Bahagian Perkembangan Kesihatan Awam, KKM</p>
-                </div>
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                    <span class="text-blue-900 font-bold text-xs uppercase block mb-1">Fokus Utama</span>
-                    <h3 class="font-bold text-sm text-slate-800">Penguatkuasaan Akta 852 & Digitalisasi</h3>
-                    <p class="text-xs text-slate-500 mt-1">Sertai perbincangan kes, pewasapan digital & peranan SKMM.</p>
-                </div>
-                <div class="bg-gradient-to-r from-amber-500 to-orange-600 text-white p-5 rounded-2xl shadow-sm">
-                    <span class="text-[10px] font-extrabold uppercase bg-black/20 px-2 py-0.5 rounded">Inisiatif Kebangsaan</span>
-                    <h3 class="font-bold text-base mt-1">MALAYSIA MADANI</h3>
-                    <p class="text-xs text-amber-100 mt-1">Membina Perkhidmatan Kesihatan Awam yang berintegriti & telus.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 2: ATUR CARA SEMINAR -->
-        <section id="sec-aturcara" class="hidden space-y-4">
-            <div class="flex gap-2 bg-slate-200 p-1 rounded-xl text-xs font-bold">
-                <button onclick="filterDay(1)" id="btn-day1" class="flex-1 py-2.5 rounded-lg bg-blue-900 text-white shadow">Hari 1 (21 Sept 2026)</button>
-                <button onclick="filterDay(2)" id="btn-day2" class="flex-1 py-2.5 rounded-lg text-slate-700 hover:bg-slate-300">Hari 2 (22 Sept 2026)</button>
-            </div>
-
-            <!-- Hari 1 Schedule -->
-            <div id="schedule-day1" class="space-y-3">
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                    <span class="text-xs font-bold text-blue-900 bg-blue-100 px-2 py-0.5 rounded">07.15 pagi - 08.00 pagi</span>
-                    <h3 class="font-bold text-slate-800 mt-1">Pendaftaran Peserta</h3>
-                </div>
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                    <span class="text-xs font-bold text-blue-900 bg-blue-100 px-2 py-0.5 rounded">08.00 pagi - 09.00 pagi</span>
-                    <h3 class="font-bold text-slate-800 mt-1">Amanat YBrs. TKPK (KA) & Sesi Libat Urus Bersama Penguatkuasa Kesihatan Awam</h3>
-                    <p class="text-xs text-slate-500 mt-1">Sektor Inspektorat dan Perundangan, KKM</p>
-                </div>
-                <div class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white p-5 rounded-xl shadow-md border border-blue-700">
-                    <span class="text-xs font-bold bg-yellow-400 text-blue-950 px-2 py-0.5 rounded">09.00 pagi - 10.30 pagi</span>
-                    <h3 class="font-bold text-lg mt-1">Majlis Perasmian Seminar</h3>
-                    <p class="text-xs text-blue-200 mt-2">• <strong>Ucapan Alu-aluan:</strong> YBrs. Dr Ismuni bin Bohari (TKPK Kesihatan Awam)</p>
-                    <p class="text-xs text-blue-200">• <strong>Ucapan Perasmian:</strong> YBhg. Datuk Seri Hj. Hasnol Zam Zam bin Hj. Ahmad (KSU KKM)</p>
-                    <p class="text-xs text-yellow-300 font-bold mt-2">★ Penyampaian Anugerah Penguatkuasaan & Pendakwaan Terbaik</p>
-                </div>
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                    <span class="text-xs font-bold text-blue-900 bg-blue-100 px-2 py-0.5 rounded">11.00 pagi - 01.00 tengah hari</span>
-                    <h3 class="font-bold text-slate-800 mt-1">Sesi 1: Penguatkuasaan & Perundangan Kesihatan Awam</h3>
-                    <p class="text-xs italic text-blue-800 font-semibold my-0.5">"Kukuhkan Kompetensi, Tingkatkan Prestasi, Jaga Integriti"</p>
-                    <p class="text-xs text-slate-600">Oleh: YBrs. Ts. Mohamad Ridzuan bin Mohamad Salleh (Ketua Sektor Inspektorat & Perundangan, KKM)</p>
-                </div>
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                    <span class="text-xs font-bold text-blue-900 bg-blue-100 px-2 py-0.5 rounded">02.00 petang - 03.00 petang</span>
-                    <h3 class="font-bold text-slate-800 mt-1">Sesi 2: Rakan Strategik Penguatkuasaan Akta 852: Pengalaman Polis Bantuan Sunway</h3>
-                    <p class="text-xs text-slate-600 mt-1">Oleh: YBhg. Datuk Muhammad Fuad Talib (Penolong Pengarah Kumpulan Keselamatan Sunway)</p>
-                </div>
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                    <span class="text-xs font-bold text-blue-900 bg-blue-100 px-2 py-0.5 rounded">03.00 petang - 04.00 petang</span>
-                    <h3 class="font-bold text-slate-800 mt-1">Sesi 3: Digitalisasi Penguatkuasaan Undang-Undang Kesihatan Awam</h3>
-                    <p class="text-xs text-slate-600 mt-1">Oleh: Puan Suriyati binti Abdullah (Ketua Unit Penguatkuasaan Kesihatan Awam, SIP)</p>
-                </div>
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                    <span class="text-xs font-bold text-blue-900 bg-blue-100 px-2 py-0.5 rounded">04.00 petang - 05.00 petang</span>
-                    <h3 class="font-bold text-slate-800 mt-1">Sesi 4: Sharing Case Study: Pendakwaan Kes Kesalahan Dalam Talian Akta 852</h3>
-                    <p class="text-xs text-slate-600 mt-1">Oleh: En. Kua Ah Kiong (Ketua Subunit Pendakwaan, SIP)</p>
-                </div>
-            </div>
-
-            <!-- Hari 2 Schedule -->
-            <div id="schedule-day2" class="space-y-3 hidden">
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                    <span class="text-xs font-bold text-blue-900 bg-blue-100 px-2 py-0.5 rounded">08.30 pagi - 09.30 pagi</span>
-                    <h3 class="font-bold text-slate-800 mt-1">Pendigitalan Pewasapan: Mengurangkan Birokrasi, Meningkatkan Prestasi</h3>
-                    <p class="text-xs text-slate-600 mt-1">Oleh: En. Muhammad Ikmal bin Ahmad Rashiden (Ketua Subunit Pewasapan, SIP)</p>
-                </div>
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                    <span class="text-xs font-bold text-blue-900 bg-blue-100 px-2 py-0.5 rounded">09.30 pagi - 10.30 pagi</span>
-                    <h3 class="font-bold text-slate-800 mt-1">Dashboard Penguatkuasaan Kesihatan Awam</h3>
-                    <p class="text-xs text-slate-600 mt-1">Oleh: En. Glynn Dexter Andreas (PPKP JKN Pulau Pinang)</p>
-                </div>
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                    <span class="text-xs font-bold text-blue-900 bg-blue-100 px-2 py-0.5 rounded">11.00 pagi - 01.00 tengah hari</span>
-                    <h3 class="font-bold text-slate-800 mt-1">Teknik Hujahan Berkesan Bagi Pendakwaan Di Bawah Undang-Undang Kesihatan Awam</h3>
-                    <p class="text-xs text-slate-600 mt-1">Oleh: Puan Nor Azizah binti Aling (Timbalan Pendakwa Raya, Jabatan Peguam Negara)</p>
-                </div>
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                    <span class="text-xs font-bold text-blue-900 bg-blue-100 px-2 py-0.5 rounded">02.00 petang - 03.00 petang</span>
-                    <h3 class="font-bold text-slate-800 mt-1">Penguat kuasa Berintegriti Tonggak Kesihatan Awam</h3>
-                    <p class="text-xs text-slate-600 mt-1">Oleh: En. Muhammad Shaqif bin Syed Jamaludin (Penolong Setiausaha, Unit Integriti KKM)</p>
-                </div>
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                    <span class="text-xs font-bold text-blue-900 bg-blue-100 px-2 py-0.5 rounded">03.00 petang - 05.00 petang</span>
-                    <h3 class="font-bold text-slate-800 mt-1">Peranan SKMM Dalam Menangani Penyalahgunaan Media Sosial</h3>
-                    <p class="text-xs text-slate-600 mt-1">Oleh: Puan Nor Azlia Weeltha (Penolong Pengarah, Jabatan Kawal Selia Kandungan, SKMM)</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 3: BORANG KEHADIRAN -->
-        <section id="sec-pendaftaran" class="hidden">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <h2 class="text-xl font-bold text-blue-900 mb-1">Borang Kehadiran Peserta</h2>
-                <p class="text-xs text-slate-500 mb-4">Sila isi maklumat rasmi anda. Rekod akan disimpan automatik ke Google Sheets & Google Drive.</p>
-                
-                <form id="regForm" onsubmit="handleRegistrationSubmit(event)" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Nama Penuh (Seperti dalam MyKad)</label>
-                        <input type="text" id="regName" required placeholder="Cth: Dr. Ahmad Bin Ali" class="w-full p-3 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-900 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">No. Kad Pengenalan</label>
-                        <input type="text" id="regIC" required placeholder="Cth: 880101015555" class="w-full p-3 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-900 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">E-mel Rasmi</label>
-                        <input type="email" id="regEmail" required placeholder="ahmad@moh.gov.my" class="w-full p-3 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-900 outline-none">
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Jawatan</label>
-                            <input type="text" id="regRole" required placeholder="Cth: PPKP / Pegawai" class="w-full p-3 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-900 outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Jabatan / JKN / PKD / PMA</label>
-                            <input type="text" id="regDept" required placeholder="Cth: JKN Perak" class="w-full p-3 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-900 outline-none">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Sesi Kehadiran</label>
-                        <select id="regDay" class="w-full p-3 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-900 outline-none">
-                            <option value="Hari 1 (21 Sept 2026)">Hari 1 (21 Sept 2026)</option>
-                            <option value="Hari 2 (22 Sept 2026)">Hari 2 (22 Sept 2026)</option>
-                            <option value="Kedua-dua Hari">Kedua-dua Hari (21 & 22 Sept 2026)</option>
-                        </select>
-                    </div>
-                    <button type="submit" id="btnSubmit" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-3.5 rounded-xl shadow-md transition text-sm flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-paper-plane"></i> Hantar & Simpan Kehadiran
-                    </button>
-                </form>
-            </div>
-        </section>
-
-        <!-- TAB 4: PAS & SIJIL DIGITAL -->
-        <section id="sec-pas" class="hidden space-y-4">
-            <div id="no-pass-alert" class="bg-amber-50 border border-amber-200 text-amber-800 p-6 rounded-2xl text-center text-sm">
-                <i class="fa-solid fa-id-badge text-4xl mb-2 text-amber-500 block"></i>
-                <h3 class="font-bold text-base">Tiada Rekod Kehadiran</h3>
-                <p class="text-xs text-amber-700 mt-1">Sila isi <strong>Borang Kehadiran</strong> terlebih dahulu untuk menjana pas kehadiran digital anda.</p>
-            </div>
-
-            <div id="pass-card-container" class="hidden space-y-4 max-w-md mx-auto">
-                <div class="bg-gradient-to-b from-blue-950 via-blue-900 to-indigo-950 text-white p-6 rounded-3xl shadow-2xl text-center relative overflow-hidden border border-blue-700">
-                    <span class="inline-block bg-yellow-400 text-blue-950 font-extrabold text-[10px] px-3 py-1 rounded-full uppercase tracking-wider mb-4">
-                        PAS KEHADIRAN DIGITAL SAH
-                    </span>
-                    <h2 id="pass-name" class="text-xl font-bold"></h2>
-                    <p id="pass-role-dept" class="text-xs text-blue-200 mt-1"></p>
-
-                    <div class="bg-white p-3 rounded-2xl inline-block my-5 shadow-inner">
-                        <div id="qrcode"></div>
-                    </div>
-
-                    <p id="pass-day" class="text-xs font-semibold text-yellow-300"></p>
-                    <p class="text-[10px] text-blue-300 mt-2">Dewan Damar Sari I & II, Putrajaya[cite: 1]</p>
-                </div>
-
-                <button onclick="window.print()" class="w-full bg-slate-800 text-white font-bold py-3 rounded-xl text-xs hover:bg-slate-700 shadow flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-print"></i> Cetak / Simpan Sebagai PDF
+                <button id="btnInstallPwa" onclick="installPWA()" class="hidden bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center shadow transition transform active:scale-95">
+                    <i class="fas fa-download mr-1.5"></i> Pasang PWA
                 </button>
             </div>
-        </section>
+        </div>
 
-        <!-- TAB 5: SENARAI JAWATANKUASA (AJK) -->
-        <section id="sec-ajk" class="hidden space-y-4">
-            <div class="bg-white p-5 rounded-2xl border border-slate-200">
-                <span class="text-[10px] font-bold text-blue-900 uppercase tracking-widest block">Anjuran Rasmi</span>
-                <h3 class="font-bold text-base text-slate-900">Bahagian Perkembangan Kesihatan Awam</h3>
-                <p class="text-xs text-slate-500">Sektor Inspektorat dan Perundangan, KKM</p>
-            </div>
+        <!-- Banner Info Title -->
+        <div class="bg-slate-950/40 border-t border-white/10 py-2 px-4 text-center">
+            <p class="text-xs sm:text-sm font-semibold text-amber-300 tracking-wide">
+                SEMINAR PENGUATKUASAAN DAN PENDAKWAAN UNDANG-UNDANG KESIHATAN AWAM TAHUN 2026
+            </p>
+        </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div class="bg-white p-4 rounded-xl border border-slate-200">
-                    <span class="text-[10px] font-bold text-blue-800 uppercase block">Penasihat[cite: 1]</span>
-                    <h4 class="font-bold text-xs text-slate-900 mt-0.5">Dr. Jamiatul Aida Bin Md. Sani</h4>
-                    <p class="text-[11px] text-slate-500">Pengarah Bahagian Perkembangan Kesihatan Awam</p>
-                </div>
-                <div class="bg-white p-4 rounded-xl border border-slate-200">
-                    <span class="text-[10px] font-bold text-blue-800 uppercase block">Pengerusi</span>
-                    <h4 class="font-bold text-xs text-slate-900 mt-0.5">Ts. Mohamad Ridzuan Bin Mohamad Salleh</h4>
-                    <p class="text-[11px] text-slate-500">Ketua Sektor Inspektorat dan Perundangan</p>
-                </div>
-                <div class="bg-white p-4 rounded-xl border border-slate-200">
-                    <span class="text-[10px] font-bold text-blue-800 uppercase block">Penyelaras</span>
-                    <h4 class="font-bold text-xs text-slate-900 mt-0.5">Pn. Suriyati Binti Abdullah</h4>
-                    <p class="text-[11px] text-slate-500">Ketua Unit Penguatkuasaan Kesihatan Awam</p>
-                </div>
-            </div>
+        <!-- Main Desktop Navigation Tabs -->
+        <nav class="hidden md:flex justify-center bg-slate-900/80 border-t border-slate-700/50 text-sm font-medium">
+            <button onclick="switchTab('utama')" id="tab-btn-utama" class="nav-btn px-5 py-3 border-b-2 border-amber-400 text-amber-400 font-bold transition flex items-center">
+                <i class="fas fa-home mr-2"></i> Utama
+            </button>
+            <button onclick="switchTab('aturcara')" id="tab-btn-aturcara" class="nav-btn px-5 py-3 border-b-2 border-transparent text-slate-300 hover:text-amber-300 transition flex items-center">
+                <i class="fas fa-calendar-alt mr-2"></i> Atur Cara
+            </button>
+            <button onclick="switchTab('kehadiran')" id="tab-btn-kehadiran" class="nav-btn px-5 py-3 border-b-2 border-transparent text-slate-300 hover:text-amber-300 transition flex items-center">
+                <i class="fas fa-user-check mr-2"></i> Kehadiran
+            </button>
+            <button onclick="switchTab('bukti')" id="tab-btn-bukti" class="nav-btn px-5 py-3 border-b-2 border-transparent text-slate-300 hover:text-amber-300 transition flex items-center">
+                <i class="fas fa-id-card mr-2"></i> Pas & Sijil
+            </button>
+            <button onclick="switchTab('ajk')" id="tab-btn-ajk" class="nav-btn px-5 py-3 border-b-2 border-transparent text-slate-300 hover:text-amber-300 transition flex items-center">
+                <i class="fas fa-users mr-2"></i> Jawatankuasa
+            </button>
+            <button onclick="switchTab('maklumbalas')" id="tab-btn-maklumbalas" class="nav-btn px-5 py-3 border-b-2 border-transparent text-slate-300 hover:text-amber-300 transition flex items-center">
+                <i class="fas fa-comment-dots mr-2"></i> Maklum Balas
+            </button>
+        </nav>
+    </header>
 
-            <div class="bg-white p-5 rounded-2xl border border-slate-200 space-y-3">
-                <h3 class="font-bold text-sm text-blue-900 border-b pb-2">Jawatankuasa Pelaksana</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                    <div><strong>JK Protokol & Jemputan:</strong> Pn. Siti Rolizawati, YM Raja Mohd Zawawi, Cik Suhailah, En. Muhammad Ikmal</div>
-                    <div><strong>JK Logistik & IT:</strong> En. Kua Ah Kiong, En. Muhammad Irfan, En. Zuhairulnizal, En. Megat Darwis, En. Aziq Jazli</div>
-                    <div><strong>JK Pendaftaran:</strong> En. Sharul Niza, Cik Fatin Najwa, En. Shahrin</div>
-                    <div><strong>JK Panel Penceramah:</strong> En. Fyzul Faisal, En. Muhammad Iskandar, En. Adam</div>
-                    <div><strong>JK Makanan:</strong> En. Mohd Ridzuan, Pn. Siti Norishah, En. Nasri Hisyam</div>
-                </div>
-            </div>
-        </section>
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full">
 
-        <!-- TAB 6: MAKLUM BALAS -->
-        <section id="sec-maklumbalas" class="hidden">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <h2 class="text-xl font-bold text-blue-900 mb-1">Borang Penilaian & Maklum Balas</h2>
-                <p class="text-xs text-slate-500 mb-4">Sila berikan ulasan anda bagi meningkatkan kualiti seminar pada masa hadapan.</p>
+        <!-- TAB 1: UTAMA (Overview & Details) -->
+        <section id="sec-utama" class="tab-content space-y-6">
+            <!-- Hero Banner Card -->
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-kkmNavy via-kkmBlue to-slate-900 text-white p-6 sm:p-10 shadow-2xl border border-slate-700">
+                <div class="absolute right-0 top-0 opacity-10 pointer-events-none transform translate-x-10 -translate-y-10">
+                    <i class="fas fa-balance-scale text-[250px] text-white"></i>
+                </div>
                 
-                <form onsubmit="handleFeedbackSubmit(event)" class="space-y-4">
+                <div class="relative z-10 max-w-3xl space-y-4">
+                    <div class="inline-flex items-center space-x-2 bg-amber-500/20 text-amber-300 border border-amber-500/40 px-3 py-1 rounded-full text-xs font-semibold">
+                        <i class="fas fa-certificate"></i>
+                        <span>Anjuran Sektor Inspektorat dan Perundangan</span>
+                    </div>
+
+                    <h2 class="text-2xl sm:text-4xl font-extrabold text-white leading-tight">
+                        SEMINAR PENGUATKUASAAN DAN PENDAKWAAN UNDANG-UNDANG KESIHATAN AWAM TAHUN 2026
+                    </h2>
+
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                        Memperkasakan kompetensi, integriti dan digitalisasi pegawai penguat kuasa kesihatan awam di seluruh Malaysia.
+                    </p>
+
+                    <!-- Key Details Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                        <div class="flex items-center space-x-3 bg-white/10 backdrop-blur p-3 rounded-xl border border-white/10">
+                            <div class="w-10 h-10 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center font-bold">
+                                <i class="fas fa-calendar-day text-lg"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-300 uppercase tracking-wider font-semibold">Tarikh Seminar</p>
+                                <p class="text-sm font-bold text-white">21 - 22 September 2026</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center space-x-3 bg-white/10 backdrop-blur p-3 rounded-xl border border-white/10">
+                            <div class="w-10 h-10 rounded-lg bg-red-500 text-white flex items-center justify-center font-bold">
+                                <i class="fas fa-map-marker-alt text-lg"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-300 uppercase tracking-wider font-semibold">Lokasi Acara</p>
+                                <p class="text-sm font-bold text-white">Dewan Damar Sari I & II</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTA Buttons -->
+                    <div class="flex flex-wrap gap-3 pt-4">
+                        <button onclick="switchTab('kehadiran')" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-6 py-3 rounded-xl shadow-lg transition flex items-center text-sm">
+                            <i class="fas fa-user-check mr-2"></i> Daftar Kehadiran Sekarang
+                        </button>
+                        <button onclick="switchTab('aturcara')" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold px-6 py-3 rounded-xl border border-slate-600 transition flex items-center text-sm">
+                            <i class="fas fa-list-alt mr-2"></i> Lihat Atur Cara
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Organizers & Theme Badge Section -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                    <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center text-xl font-bold">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-900">Anjuran Rasmi</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Sektor Inspektorat dan Perundangan<br>
+                        Bahagian Perkembangan Kesihatan Awam<br>
+                        <strong class="text-slate-800">Kementerian Kesihatan Malaysia</strong>
+                    </p>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                    <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-xl font-bold">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-900">Fokus Utama</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Penguatkuasaan Akta 852, Digitalisasi Pewasapan, Teknik Hujahan Pendakwaan, Keselamatan Media Sosial (SKMM) dan Integriti Pegawai.
+                    </p>
+                </div>
+
+                <div class="bg-gradient-to-br from-red-600 via-amber-500 to-blue-700 text-white p-6 rounded-2xl shadow-md flex flex-col justify-between">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Penilaian Keseluruhan Seminar</label>
-                        <select id="fbRating" class="w-full p-3 border border-slate-300 rounded-xl text-sm outline-none">
-                            <option value="5">⭐⭐⭐⭐⭐ Cemerlang (5/5)</option>
-                            <option value="4">⭐⭐⭐⭐ Sangat Baik (4/5)</option>
-                            <option value="3">⭐⭐⭐ Baik (3/5)</option>
-                            <option value="2">⭐⭐ Sederhana (2/5)</option>
-                            <option value="1">⭐ Penambahbaikan Memerlukan (1/5)</option>
+                        <span class="bg-white/20 px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider">Inisiatif Kebangsaan</span>
+                        <h3 class="text-2xl font-black mt-2 tracking-wide">MALAYSIA MADANI</h3>
+                        <p class="text-xs text-white/90 mt-1">Membina Perkhidmatan Kesihatan Awam yang berintegriti, telus dan berteraskan digitalisasi.</p>
+                    </div>
+                    <div class="text-right text-xs font-semibold text-white/80 mt-4">
+                        #KKMHebat #PenguatkuasaanMadani
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Quick Status Widget -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <h3 class="text-base font-bold text-slate-900 mb-4 flex items-center">
+                    <i class="fas fa-info-circle text-amber-500 mr-2"></i> Status Pendaftaran Anda
+                </h3>
+                <div id="quickStatusContent" class="text-sm text-slate-600">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: ATUR CARA (Schedule) -->
+        <section id="sec-aturcara" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Atur Cara Seminar</h2>
+                    <p class="text-xs text-slate-500">Jadual Pembentangan & Sesi Latihan (21-22 September 2026)</p>
+                </div>
+
+                <!-- Day Filter Tabs -->
+                <div class="flex bg-slate-100 p-1.5 rounded-xl self-start md:self-auto">
+                    <button onclick="filterDay(1)" id="btn-day-1" class="px-4 py-2 rounded-lg text-xs font-bold transition bg-white text-blue-900 shadow-sm">
+                        Hari 1 (21 Sept)
+                    </button>
+                    <button onclick="filterDay(2)" id="btn-day-2" class="px-4 py-2 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900">
+                        Hari 2 (22 Sept)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Schedule Timelines Container -->
+            <div id="scheduleContainer" class="space-y-4">
+                <!-- Dynamically Rendered by JS -->
+            </div>
+        </section>
+
+        <!-- TAB 3: KEHADIRAN (Attendance Form) -->
+        <section id="sec-kehadiran" class="tab-content hidden space-y-6">
+            <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+                <div class="bg-gradient-to-r from-kkmNavy to-kkmBlue text-white p-6">
+                    <h2 class="text-xl font-bold flex items-center">
+                        <i class="fas fa-clipboard-user mr-2 text-amber-400"></i> Borang Pendaftaran Kehadiran
+                    </h2>
+                    <p class="text-xs text-slate-300 mt-1">Sila isi maklumat rasmi anda untuk mengesahkan kehadiran dan mendaftar sijil digital.</p>
+                </div>
+
+                <form id="attendanceForm" onsubmit="handleRegister(event)" class="p-6 space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nama Penuh (Seperti dalam MyKad)</label>
+                        <input type="text" id="regNama" required placeholder="Contoh: AHMAD BIN ABDULLAH" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">No. Kad Pengenalan / ID Staf</label>
+                            <input type="text" id="regIc" required placeholder="880101015555" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Jawatan</label>
+                            <input type="text" id="regJawatan" required placeholder="Penolong Pegawai Kesihatan Persekitaran" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 text-sm">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Jabatan / JKN / PKD / Hospital</label>
+                            <input type="text" id="regJabatan" required placeholder="JKN Pulau Pinang / SIP KKM" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">No. Telefon (WhatsApp)</label>
+                            <input type="tel" id="regPhone" required placeholder="0123456789" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 text-sm">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Alamat E-mel Rasmi</label>
+                        <input type="email" id="regEmail" required placeholder="contoh@moh.gov.my" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 text-sm">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Hari Kehadiran</label>
+                        <select id="regHari" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 text-sm bg-white">
+                            <option value="Kedua-dua Hari (21 & 22 Sept)">Kedua-dua Hari (21 & 22 September 2026)</option>
+                            <option value="Hari Pertama Sahaja (21 Sept)">Hari Pertama Sahaja (21 September 2026)</option>
+                            <option value="Hari Kedua Sahaja (22 Sept)">Hari Kedua Sahaja (22 September 2026)</option>
                         </select>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Ulasan / Cadangan Penambahbaikan</label>
-                        <textarea id="fbComment" rows="4" required placeholder="Tuliskan ulasan anda berkenaan kandungan seminar, penceramah, fasiliti atau perkhidmatan..." class="w-full p-3 border border-slate-300 rounded-xl text-sm outline-none"></textarea>
+
+                    <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-xs text-amber-800 flex items-start space-x-2">
+                        <i class="fas fa-shield-alt text-amber-600 mt-0.5"></i>
+                        <span>Maklumat ini akan digunakan untuk penjanaan Pas Digital & Sijil Kehadiran Rasmi KKM anda.</span>
                     </div>
-                    <button type="submit" id="btnFbSubmit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3.5 rounded-xl shadow-md transition text-sm flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-paper-plane"></i> Hantar Maklum Balas
+
+                    <button type="submit" class="w-full bg-gradient-to-r from-blue-700 to-indigo-800 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:brightness-110 transition flex items-center justify-center text-sm">
+                        <i class="fas fa-check-circle mr-2"></i> Sahkan & Simpan Kehadiran
                     </button>
                 </form>
+            </div>
+        </section>
+
+        <!-- TAB 4: BUKTI & SIJIL (Pass & Digital Certificate) -->
+        <section id="sec-bukti" class="tab-content hidden space-y-6">
+            <!-- Alert if not registered -->
+            <div id="unregisteredNotice" class="bg-amber-50 border border-amber-200 rounded-2xl p-8 text-center max-w-xl mx-auto space-y-4">
+                <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800">Kehadiran Belum Didaftarkan</h3>
+                <p class="text-sm text-slate-600">Sila isi borang kehadiran terlebih dahulu untuk mendapatkan Pas Kehadiran Digital dan Sijil Penyertaan anda.</p>
+                <button onclick="switchTab('kehadiran')" class="bg-blue-800 text-white font-bold px-6 py-2.5 rounded-xl shadow text-sm hover:bg-blue-900 transition">
+                    Isi Borang Kehadiran Sekarang
+                </button>
+            </div>
+
+            <!-- Printable Pass & Certificate Container -->
+            <div id="registeredArea" class="hidden space-y-8">
+                
+                <!-- Action Buttons Top Bar -->
+                <div class="flex flex-wrap items-center justify-between gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-200 no-print">
+                    <div>
+                        <h3 class="font-bold text-slate-900">Bukti Kehadiran & Sijil Digital</h3>
+                        <p class="text-xs text-slate-500">Boleh dimuat turun atau dicetak secara rasmi</p>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick="printArea()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center shadow transition">
+                            <i class="fas fa-print mr-2"></i> Cetak / Simpan PDF
+                        </button>
+                        <button onclick="clearRegistration()" class="bg-slate-200 hover:bg-red-100 hover:text-red-700 text-slate-700 font-semibold px-3 py-2 rounded-xl text-xs transition">
+                            <i class="fas fa-sync mr-1"></i> Daftar Semula
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Print Wrapper -->
+                <div id="printable-area" class="space-y-8">
+
+                    <!-- SECTION A: DIGITAL ATTENDANCE PASS BADGE -->
+                    <div class="max-w-md mx-auto bg-gradient-to-b from-slate-900 to-kkmNavy text-white rounded-3xl shadow-2xl overflow-hidden border-2 border-amber-400 relative">
+                        <!-- Top Header -->
+                        <div class="bg-gradient-to-r from-red-600 via-amber-500 to-blue-700 p-2 text-center text-[10px] font-bold tracking-widest uppercase">
+                            MALAYSIA MADANI • KKM 2026
+                        </div>
+
+                        <div class="p-6 text-center space-y-4">
+                            <!-- Crest -->
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Coat_of_arms_of_Malaysia.svg/250px-Coat_of_arms_of_Malaysia.svg.png" 
+                                 class="h-14 mx-auto drop-shadow-md" alt="KKM Crest"
+                                 onerror="this.src='https://placehold.co/100x100/1e3a8a/ffffff?text=KKM'">
+
+                            <div>
+                                <h4 class="text-xs uppercase font-extrabold text-amber-400 tracking-wider">PAS DIGITAL PESERTA</h4>
+                                <h3 class="text-sm font-bold text-white leading-snug mt-1">SEMINAR PENGUATKUASAAN & PENDAKWAAN UNDANG-UNDANG KESIHATAN AWAM</h3>
+                            </div>
+
+                            <!-- Participant Details Box -->
+                            <div class="bg-white/10 backdrop-blur rounded-2xl p-4 text-left border border-white/15 space-y-2">
+                                <div>
+                                    <p class="text-[10px] text-slate-400 uppercase font-semibold">Nama Peserta</p>
+                                    <p id="passNama" class="text-sm font-bold text-amber-300 uppercase"></p>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <p class="text-[10px] text-slate-400 uppercase font-semibold">No. ID / IC</p>
+                                        <p id="passIc" class="text-xs font-semibold text-white"></p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] text-slate-400 uppercase font-semibold">ID Kehadiran</p>
+                                        <p id="passBadgeId" class="text-xs font-mono font-bold text-emerald-400"></p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] text-slate-400 uppercase font-semibold">Jabatan / JKN</p>
+                                    <p id="passJabatan" class="text-xs font-medium text-slate-200"></p>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] text-slate-400 uppercase font-semibold">Sesi Kehadiran</p>
+                                    <p id="passHari" class="text-xs font-bold text-amber-400"></p>
+                                </div>
+                            </div>
+
+                            <!-- QR Code Rendered dynamically -->
+                            <div class="bg-white p-3 rounded-xl inline-block shadow-inner">
+                                <img id="passQrCode" src="" alt="QR Code Kehadiran" class="w-32 h-32 mx-auto">
+                                <p class="text-[9px] text-slate-600 font-mono mt-1">Imbas untuk Semakan Rasmi</p>
+                            </div>
+
+                            <div class="text-[10px] text-slate-400 pt-2 border-t border-white/10 flex justify-between items-center">
+                                <span>21-22 Sept 2026</span>
+                                <span>Dewan Damar Sari I & II</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION B: OFFICIAL DIGITAL CERTIFICATE OF ATTENDANCE -->
+                    <div class="max-w-4xl mx-auto bg-white p-8 sm:p-12 rounded-2xl shadow-xl gold-border relative text-slate-900 space-y-6">
+                        <!-- Watermark Icon -->
+                        <div class="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
+                            <i class="fas fa-award text-[350px] text-amber-600"></i>
+                        </div>
+
+                        <!-- Certificate Header -->
+                        <div class="text-center space-y-3">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Coat_of_arms_of_Malaysia.svg/250px-Coat_of_arms_of_Malaysia.svg.png" 
+                                 class="h-16 mx-auto" alt="JSN Logo"
+                                 onerror="this.src='https://placehold.co/100x100/1e3a8a/ffffff?text=KKM'">
+                            <h2 class="text-xs font-bold tracking-widest text-slate-600 uppercase">Kementerian Kesihatan Malaysia</h2>
+                            <h1 class="text-2xl sm:text-3xl font-bold cert-font text-blue-950 uppercase tracking-wide">Sijil Penyertaan</h1>
+                            <p class="text-xs text-slate-500 italic">Dengan ini diperakukan bahawa</p>
+                        </div>
+
+                        <!-- Recipient Name -->
+                        <div class="text-center my-6">
+                            <h3 id="certNama" class="text-xl sm:text-3xl font-extrabold text-amber-700 uppercase border-b-2 border-amber-400 inline-block px-8 py-1"></h3>
+                            <p id="certIc" class="text-xs text-slate-600 font-semibold mt-2"></p>
+                            <p id="certJabatan" class="text-xs text-slate-500 uppercase mt-0.5"></p>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="text-center max-w-2xl mx-auto space-y-2 text-xs sm:text-sm text-slate-700 leading-relaxed">
+                            <p>Telah berjaya menyertai dan menghadiri</p>
+                            <p class="font-bold text-slate-900 text-sm sm:text-base">
+                                SEMINAR PENGUATKUASAAN DAN PENDAKWAAN UNDANG-UNDANG KESIHATAN AWAM TAHUN 2026
+                            </p>
+                            <p>
+                                Bertempat di <strong>Dewan Damar Sari I & II</strong> pada <strong>21 hingga 22 September 2026</strong>.
+                            </p>
+                        </div>
+
+                        <!-- Signatures -->
+                        <div class="grid grid-cols-2 gap-8 pt-8 mt-8 border-t border-slate-200 text-center">
+                            <div>
+                                <p class="cert-font font-bold text-slate-800 text-xs sm:text-sm">DR. JAMIATUL AIDA BIN MD. SANI</p>
+                                <p class="text-[10px] text-slate-500">Penasihat Seminar / Pengarah</p>
+                                <p class="text-[9px] text-slate-400">Bahagian Perkembangan Kesihatan Awam, KKM</p>
+                            </div>
+                            <div>
+                                <p class="cert-font font-bold text-slate-800 text-xs sm:text-sm">TS. MOHAMAD RIDZUAN BIN MOHAMAD SALLEH</p>
+                                <p class="text-[10px] text-slate-500">Pengerusi Seminar / Ketua Sektor</p>
+                                <p class="text-[9px] text-slate-400">Sektor Inspektorat dan Perundangan, KKM</p>
+                            </div>
+                        </div>
+
+                        <div class="text-center pt-2">
+                            <span class="inline-block text-[9px] text-slate-400 border border-slate-200 rounded-full px-3 py-1 font-mono">
+                                Sijil Dijana Secara Digital • No Verifikasi: <span id="certVerifyCode"></span>
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: AJK (Organization Committee) -->
+        <section id="sec-ajk" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="text-2xl font-bold text-slate-900">Senarai Ahli Jawatankuasa</h2>
+                <p class="text-xs text-slate-500">Jawatankuasa Pengelola Seminar Penguatkuasaan dan Pendakwaan Undang-Undang Kesihatan Awam Tahun 2026</p>
+            </div>
+
+            <!-- Key Advisors Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-gradient-to-br from-blue-900 to-indigo-950 text-white p-5 rounded-2xl shadow-md border border-blue-800">
+                    <span class="bg-amber-400 text-slate-950 font-bold px-2.5 py-0.5 rounded text-[10px] uppercase">Penasihat</span>
+                    <h3 class="font-bold text-base mt-2 text-amber-300">DR. JAMIATUL AIDA BIN MD. SANI</h3>
+                    <p class="text-xs text-slate-300 mt-1">Pengarah Bahagian Perkembangan Kesihatan Awam</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-blue-900 to-indigo-950 text-white p-5 rounded-2xl shadow-md border border-blue-800">
+                    <span class="bg-amber-400 text-slate-950 font-bold px-2.5 py-0.5 rounded text-[10px] uppercase">Pengerusi</span>
+                    <h3 class="font-bold text-base mt-2 text-amber-300">TS. MOHAMAD RIDZUAN BIN MOHAMAD SALLEH</h3>
+                    <p class="text-xs text-slate-300 mt-1">Ketua Sektor Inspektorat dan Perundangan</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-blue-900 to-indigo-950 text-white p-5 rounded-2xl shadow-md border border-blue-800">
+                    <span class="bg-amber-400 text-slate-950 font-bold px-2.5 py-0.5 rounded text-[10px] uppercase">Penyelaras</span>
+                    <h3 class="font-bold text-base mt-2 text-amber-300">PN. SURIYATI BINTI ABDULLAH</h3>
+                    <p class="text-xs text-slate-300 mt-1">Ketua Unit Penguatkuasaan Kesihatan Awam</p>
+                </div>
+            </div>
+
+            <!-- Sub-Committees Cards Grid -->
+            <div id="ajkGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Populated via JS -->
+            </div>
+        </section>
+
+        <!-- TAB 6: MAKLUM BALAS (Feedback Form) -->
+        <section id="sec-maklumbalas" class="tab-content hidden space-y-6">
+            <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+                <div class="bg-gradient-to-r from-slate-900 to-kkmBlue text-white p-6">
+                    <h2 class="text-xl font-bold flex items-center">
+                        <i class="fas fa-star-half-alt text-amber-400 mr-2"></i> Borang Maklum Balas Seminar
+                    </h2>
+                    <p class="text-xs text-slate-300 mt-1">Pendapat anda amat penting bagi meningkatkan kualiti penganjuran di masa hadapan.</p>
+                </div>
+
+                <form id="feedbackForm" onsubmit="handleFeedback(event)" class="p-6 space-y-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-2">1. Penilaian Keseluruhan Seminar</label>
+                        <div class="flex items-center space-x-2" id="starRatingGroup">
+                            <button type="button" onclick="setRating(1)" class="star-btn text-2xl text-slate-300 hover:text-amber-400"><i class="fas fa-star"></i></button>
+                            <button type="button" onclick="setRating(2)" class="star-btn text-2xl text-slate-300 hover:text-amber-400"><i class="fas fa-star"></i></button>
+                            <button type="button" onclick="setRating(3)" class="star-btn text-2xl text-slate-300 hover:text-amber-400"><i class="fas fa-star"></i></button>
+                            <button type="button" onclick="setRating(4)" class="star-btn text-2xl text-slate-300 hover:text-amber-400"><i class="fas fa-star"></i></button>
+                            <button type="button" onclick="setRating(5)" class="star-btn text-2xl text-slate-300 hover:text-amber-400"><i class="fas fa-star"></i></button>
+                            <span id="ratingValueText" class="text-xs font-bold text-amber-600 ml-2">Sila Pilih</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Pengisian Pembentangan</label>
+                            <select id="fbContent" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm bg-white">
+                                <option value="Sangat Cemerlang">Sangat Cemerlang</option>
+                                <option value="Baik" selected>Baik</option>
+                                <option value="Memuaskan">Memuaskan</option>
+                                <option value="Perlu Penambahbaikan">Perlu Penambahbaikan</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Kemudahan & Logistik</label>
+                            <select id="fbVenue" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm bg-white">
+                                <option value="Sangat Cemerlang">Sangat Cemerlang</option>
+                                <option value="Baik" selected>Baik</option>
+                                <option value="Memuaskan">Memuaskan</option>
+                                <option value="Perlu Penambahbaikan">Perlu Penambahbaikan</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Cadangan & Ulasan Penambahbaikan</label>
+                        <textarea id="fbComments" rows="3" placeholder="Sila berikan maklum balas atau cadangan anda..." class="w-full p-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-blue-500"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl shadow transition flex items-center justify-center text-sm">
+                        <i class="fas fa-paper-plane mr-2"></i> Hantar Maklum Balas
+                    </button>
+                </form>
+
+                <div id="fbSuccessMsg" class="hidden p-6 text-center space-y-3 bg-emerald-50 text-emerald-900 border-t border-emerald-200">
+                    <i class="fas fa-check-circle text-4xl text-emerald-600"></i>
+                    <h4 class="font-bold text-lg">Terima Kasih Atas Maklum Balas Anda!</h4>
+                    <p class="text-xs text-emerald-700">Pandangan anda amat berharga untuk penganjuran masa hadapan KKM.</p>
+                </div>
             </div>
         </section>
 
     </main>
 
-    <!-- LOGIK JAVASCRIPT & PENGHANTARAN DATA -->
-    <script>
-        // 🛑 TAMPAL URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI!
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwuAi90uvhRtXPh1sW9L4nwaClPimg14x8sQeI6pbsdWJ9lQ4VmwRskm0iAejnYrHXb/exec";
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur border-t border-slate-800 text-white z-50 flex justify-around py-2 text-[10px]">
+        <button onclick="switchTab('utama')" id="mob-tab-utama" class="flex flex-col items-center text-amber-400">
+            <i class="fas fa-home text-base mb-0.5"></i> Utama
+        </button>
+        <button onclick="switchTab('aturcara')" id="mob-tab-aturcara" class="flex flex-col items-center text-slate-400">
+            <i class="fas fa-calendar-alt text-base mb-0.5"></i> Atur Cara
+        </button>
+        <button onclick="switchTab('kehadiran')" id="mob-tab-kehadiran" class="flex flex-col items-center text-slate-400">
+            <i class="fas fa-user-check text-base mb-0.5"></i> Kehadiran
+        </button>
+        <button onclick="switchTab('bukti')" id="mob-tab-bukti" class="flex flex-col items-center text-slate-400">
+            <i class="fas fa-id-card text-base mb-0.5"></i> Sijil & Pas
+        </button>
+        <button onclick="switchTab('ajk')" id="mob-tab-ajk" class="flex flex-col items-center text-slate-400">
+            <i class="fas fa-users text-base mb-0.5"></i> AJK
+        </button>
+        <button onclick="switchTab('maklumbalas')" id="mob-tab-maklumbalas" class="flex flex-col items-center text-slate-400">
+            <i class="fas fa-comment-dots text-base mb-0.5"></i> Maklum Balas
+        </button>
+    </div>
 
-        // Navigation Switcher
-        function showTab(tabId) {
-            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('border-blue-900', 'text-blue-900', 'bg-blue-50/50');
-                btn.classList.add('border-transparent');
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 px-4 text-center border-t border-slate-800 mb-12 md:mb-0">
+        <div class="max-w-7xl mx-auto space-y-2">
+            <p class="font-semibold text-slate-300">SEKTOR INSPEKTORAT DAN PERUNDANGAN | BAHAGIAN PERKEMBANGAN KESIHATAN AWAM</p>
+            <p>Kementerian Kesihatan Malaysia © 2026. Hak Cipta Terelihara.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Data Structures from PDF Document
+        const scheduleData = [
+            // Day 1
+            {
+                day: 1,
+                time: "07.15 pagi - 08.00 pagi",
+                title: "Pendaftaran Peserta",
+                speaker: "Urus Setia Pendaftaran",
+                type: "pendaftaran"
+            },
+            {
+                day: 1,
+                time: "08.00 pagi - 09.00 pagi",
+                title: "Amanat YBrs. TKPK (KA) dan Sesi Libat Urus Bersama Penguatkuasa Kesihatan Awam, KKM",
+                speaker: "YBrs. Timbalan Ketua Pengarah Kesihatan (Kesihatan Awam)",
+                type: "ucapan"
+            },
+            {
+                day: 1,
+                time: "09.00 pagi - 10.30 pagi",
+                title: "Majlis Perasmian Seminar",
+                speaker: "• Ucapan Alu-aluan: YBrs. Dr Ismuni bin Bohari (TKPK KA, KKM)\n• Ucapan Perasmian: YBhg. Datuk Seri Hj. Hasnol Zam Zam bin Hj. Ahmad (KSU KKM)\n• Anugerah Penyampaian Penguatkuasaan dan Pendakwaan Terbaik",
+                type: "perasmian"
+            },
+            {
+                day: 1,
+                time: "10.30 pagi - 11.00 pagi",
+                title: "Minum Pagi",
+                speaker: "- Rehat -",
+                type: "rehat"
+            },
+            {
+                day: 1,
+                time: "11.00 pagi - 01.00 tengahari",
+                title: "Penguatkuasaan dan Perundangan Kesihatan Awam: 'Kukuhkan Kompetensi, Tingkatkan Prestasi, Jaga Integriti'",
+                speaker: "YBrs. Ts. Mohamad Ridzuan bin Mohamad Salleh (Ketua Sektor Inspektorat dan Perundangan, KKM)",
+                type: "ceramah"
+            },
+            {
+                day: 1,
+                time: "01.00 tengahari - 02.00 petang",
+                title: "Makan Tengahari",
+                speaker: "- Rehat -",
+                type: "rehat"
+            },
+            {
+                day: 1,
+                time: "02.00 petang - 03.00 petang",
+                title: "Rakan Strategik Penguatkuasaan Akta 852: Pengalaman Polis Bantuan Sunway",
+                speaker: "YBhg. Datuk Muhammad Fuad Talib (Penolong Pengarah Kumpulan Keselamatan Sunway)",
+                type: "ceramah"
+            },
+            {
+                day: 1,
+                time: "03.00 petang - 04.00 petang",
+                title: "Digitalisasi Penguatkuasaan Undang-Undang Kesihatan Awam",
+                speaker: "Puan Suriyati binti Abdullah (Ketua Unit Penguatkuasaan Kesihatan Awam, SIP)",
+                type: "ceramah"
+            },
+            {
+                day: 1,
+                time: "04.00 petang - 05.00 petang",
+                title: "Sharing Case Study: Pendakwaan Bagi Kes Kesalahan Dalam Talian Di Bawah Akta 852",
+                speaker: "En Kua Ah Kiong (Ketua Subunit Pendakwaan, SIP)",
+                type: "ceramah"
+            },
+
+            // Day 2
+            {
+                day: 2,
+                time: "08.30 pagi - 09.30 pagi",
+                title: "Pendigitalan Pewasapan: Mengurangkan Birokrasi, Meningkatkan Prestasi",
+                speaker: "En Muhammad Ikmal bin Ahmad Rashiden (Ketua Subunit Pewasapan, SIP)",
+                type: "ceramah"
+            },
+            {
+                day: 2,
+                time: "09.30 pagi - 10.30 pagi",
+                title: "Dashboard Penguatkuasaan Kesihatan Awam",
+                speaker: "En. Glynn Dexter Andreas (Penolong Pegawai Kesihatan Persekitaran, JKN Pulau Pinang)",
+                type: "ceramah"
+            },
+            {
+                day: 2,
+                time: "10.30 pagi - 11.00 pagi",
+                title: "Minum Pagi",
+                speaker: "- Rehat -",
+                type: "rehat"
+            },
+            {
+                day: 2,
+                time: "11.00 pagi - 01.00 tengahari",
+                title: "Teknik Hujahan Berkesan Bagi Pendakwaan Di Bawah Undang-Undang Kesihatan Awam",
+                speaker: "Puan Nor Azizah binti Aling (Timbalan Pendakwa Raya, Jabatan Peguam Negara)",
+                type: "ceramah"
+            },
+            {
+                day: 2,
+                time: "01.00 tengahari - 02.00 petang",
+                title: "Makan Tengahari",
+                speaker: "- Rehat -",
+                type: "rehat"
+            },
+            {
+                day: 2,
+                time: "02.00 petang - 03.00 petang",
+                title: "Penguat kuasa Berintegriti Tonggak Kesihatan Awam",
+                speaker: "En Muhammad Shaqif bin Syed Jamaludin (Penolong Setiausaha, Unit Integriti KKM)",
+                type: "ceramah"
+            },
+            {
+                day: 2,
+                time: "03.00 petang - 05.00 petang",
+                title: "Peranan SKMM dalam Menangani Penyalahgunaan Media Sosial serta Proses Sekatan Laman Sesawang & Permohonan Penurunan Kandungan",
+                speaker: "Puan Nor Azlia Weeltha (Penolong Pengarah, Jabatan Kawal Selia Kandungan, SKMM)",
+                type: "ceramah"
+            },
+            {
+                day: 2,
+                time: "05.00 petang",
+                title: "Majlis Penutupan & Bersurai",
+                speaker: "Semua Peserta & Urus Setia",
+                type: "penutup"
+            }
+        ];
+
+        const ajkData = [
+            {
+                title: "JK PROTOKOL DAN JEMPUTAN",
+                members: [
+                    "PN. SITI ROLIZAWATI BINTI MAMAT",
+                    "YM RAJA MOHD ZAWAWI BIN RAJA BIDING",
+                    "CIK SUHAILAH BINTI SAMSUDIN",
+                    "EN. MUHAMMAD IKMAL BIN AHMAD RASHIDEN"
+                ]
+            },
+            {
+                title: "JK LOGISTIK DAN IT",
+                members: [
+                    "EN. KUA AH KIONG",
+                    "EN. MUHAMMAD IRFAN BIN HASNOL ZAM ZAM",
+                    "EN. ZUHAIRULNIZAL BIN KHIDIR",
+                    "EN. MEGAT DARWIS DURRANI BIN MGAT MEZE",
+                    "EN. AZIQ JAZLI BIN JAMALEE"
+                ]
+            },
+            {
+                title: "JK PENDAFTARAN",
+                members: [
+                    "EN. SHARUL NIZA BIN BADARUDIN",
+                    "CIK FATIN NAJWA BINTI ZULKIFLI",
+                    "EN. SHAHRIN BIN JAMDAN"
+                ]
+            },
+            {
+                title: "JK PANEL PENCERAMAH",
+                members: [
+                    "EN. FYZUL FAISAL BIN MOHD KHADZI",
+                    "EN. MUHAMMAD ISKANDAR BIN NOH",
+                    "EN. ADAM BIN ABU BAKAR"
+                ]
+            },
+            {
+                title: "JK MAKANAN",
+                members: [
+                    "EN. MOHD RIDZUAN BIN MOHD ZIN",
+                    "PN. SITI NORISHAH ZAKARIA",
+                    "EN. NASRI HISYAM BIN MOHAMED"
+                ]
+            }
+        ];
+
+        let selectedRating = 0;
+        let activeDayFilter = 1;
+
+        window.addEventListener('load', () => {
+            renderSchedule(1);
+            renderAJK();
+            checkExistingRegistration();
+            registerServiceWorker();
+        });
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`sec-${tabId}`).classList.remove('hidden');
+
+            // Update desktop tabs
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('border-amber-400', 'text-amber-400', 'font-bold');
+                btn.classList.add('border-transparent', 'text-slate-300');
+            });
+            const activeNav = document.getElementById(`tab-btn-${tabId}`);
+            if(activeNav) {
+                activeNav.classList.add('border-amber-400', 'text-amber-400', 'font-bold');
+                activeNav.classList.remove('border-transparent', 'text-slate-300');
+            }
+
+            // Update mobile navbar
+            document.querySelectorAll('[id^="mob-tab-"]').forEach(btn => {
+                btn.classList.remove('text-amber-400');
+                btn.classList.add('text-slate-400');
+            });
+            const activeMob = document.getElementById(`mob-tab-${tabId}`);
+            if(activeMob) {
+                activeMob.classList.add('text-amber-400');
+                activeMob.classList.remove('text-slate-400');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Render Schedule Items
+        function renderSchedule(day) {
+            activeDayFilter = day;
+            const container = document.getElementById('scheduleContainer');
+            container.innerHTML = '';
+
+            const filtered = scheduleData.filter(item => item.day === day);
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-start space-y-3 sm:space-y-0 sm:space-x-4 transition hover:border-amber-300';
+                
+                let badgeColor = 'bg-blue-100 text-blue-800';
+                if (item.type === 'rehat') badgeColor = 'bg-emerald-100 text-emerald-800';
+                if (item.type === 'perasmian' || item.type === 'ucapan') badgeColor = 'bg-amber-100 text-amber-900';
+
+                card.innerHTML = `
+                    <div class="sm:w-48 flex-shrink-0">
+                        <span class="inline-block px-3 py-1 rounded-full text-xs font-bold ${badgeColor}">
+                            <i class="far fa-clock mr-1"></i> ${item.time}
+                        </span>
+                    </div>
+                    <div class="flex-grow space-y-1">
+                        <h4 class="font-bold text-slate-900 text-sm sm:text-base leading-snug">${item.title}</h4>
+                        <p class="text-xs text-slate-600 whitespace-pre-line leading-relaxed"><i class="fas fa-user-tie text-slate-400 mr-1.5"></i>${item.speaker}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterDay(day) {
+            document.getElementById('btn-day-1').className = day === 1 ? 
+                'px-4 py-2 rounded-lg text-xs font-bold transition bg-white text-blue-900 shadow-sm' : 
+                'px-4 py-2 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900';
+            
+            document.getElementById('btn-day-2').className = day === 2 ? 
+                'px-4 py-2 rounded-lg text-xs font-bold transition bg-white text-blue-900 shadow-sm' : 
+                'px-4 py-2 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900';
+
+            renderSchedule(day);
+        }
+
+        // Render AJK
+        function renderAJK() {
+            const container = document.getElementById('ajkGrid');
+            container.innerHTML = '';
+
+            ajkData.forEach(group => {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3';
+                
+                let membersList = group.members.map(m => `
+                    <li class="flex items-center text-xs text-slate-700 font-medium py-1 border-b border-slate-100 last:border-0">
+                        <i class="fas fa-user-check text-blue-600 mr-2 text-[10px]"></i> ${m}
+                    </li>
+                `).join('');
+
+                card.innerHTML = `
+                    <h3 class="font-bold text-sm text-blue-950 border-b-2 border-amber-400 pb-2 flex items-center">
+                        <i class="fas fa-users-cog mr-2 text-amber-600"></i> ${group.title}
+                    </h3>
+                    <ul class="space-y-0.5 pt-1">
+                        ${membersList}
+                    </ul>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Attendance Registration Handler
+        function handleRegister(e) {
+            e.preventDefault();
+
+            const nama = document.getElementById('regNama').value.toUpperCase().trim();
+            const ic = document.getElementById('regIc').value.trim();
+            const jawatan = document.getElementById('regJawatan').value.trim();
+            const jabatan = document.getElementById('regJabatan').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const hari = document.getElementById('regHari').value;
+
+            // Generate Badge ID & Verify Code
+            const randomCode = Math.floor(1000 + Math.random() * 9000);
+            const badgeId = `KKM2026-${randomCode}`;
+            const verifyCode = `KKM-SIP-2026-${Math.floor(100000 + Math.random() * 900000)}`;
+
+            const participantData = {
+                nama, ic, jawatan, jabatan, phone, email, hari, badgeId, verifyCode,
+                registeredAt: new Date().toLocaleDateString('ms-MY')
+            };
+
+            localStorage.setItem('kkmSeminarUser', JSON.stringify(participantData));
+            
+            checkExistingRegistration();
+            switchTab('bukti');
+        }
+
+        // Check LocalStorage Registration Status
+        function checkExistingRegistration() {
+            const saved = localStorage.getItem('kkmSeminarUser');
+            const unregNotice = document.getElementById('unregisteredNotice');
+            const regArea = document.getElementById('registeredArea');
+            const quickStatus = document.getElementById('quickStatusContent');
+
+            if (saved) {
+                const user = JSON.parse(saved);
+
+                // Show Proof Area
+                unregNotice.classList.add('hidden');
+                regArea.classList.remove('hidden');
+
+                // Populate Pass
+                document.getElementById('passNama').textContent = user.nama;
+                document.getElementById('passIc').textContent = user.ic;
+                document.getElementById('passBadgeId').textContent = user.badgeId;
+                document.getElementById('passJabatan').textContent = user.jabatan;
+                document.getElementById('passHari').textContent = user.hari;
+
+                // QR Code Generator API
+                const qrContent = encodeURIComponent(`SEMINAR KKM 2026 | ID: ${user.badgeId} | NAMA: ${user.nama} | MYKAD: ${user.ic}`);
+                document.getElementById('passQrCode').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${qrContent}`;
+
+                // Populate Certificate
+                document.getElementById('certNama').textContent = user.nama;
+                document.getElementById('certIc').textContent = `NO. K.P / PASPORT: ${user.ic}`;
+                document.getElementById('certJabatan').textContent = `${user.jawatan} — ${user.jabatan}`;
+                document.getElementById('certVerifyCode').textContent = user.verifyCode;
+
+                // Quick Status Widget
+                quickStatus.innerHTML = `
+                    <div class="flex items-center justify-between bg-emerald-50 p-3 rounded-xl border border-emerald-200">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-emerald-500 text-white rounded-lg flex items-center justify-center font-bold text-lg">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-slate-900">${user.nama}</p>
+                                <p class="text-xs text-slate-500">ID Pas Kehadiran: <strong class="text-emerald-700">${user.badgeId}</strong> (${user.hari})</p>
+                            </div>
+                        </div>
+                        <button onclick="switchTab('bukti')" class="bg-blue-900 text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-blue-800">
+                            Lihat Pas & Sijil
+                        </button>
+                    </div>
+                `;
+            } else {
+                unregNotice.classList.remove('hidden');
+                regArea.classList.add('hidden');
+
+                quickStatus.innerHTML = `
+                    <div class="flex items-center justify-between bg-amber-50 p-3 rounded-xl border border-amber-200">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-amber-500 text-white rounded-lg flex items-center justify-center font-bold text-lg">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-slate-900">Kehadiran Belum Didaftarkan</p>
+                                <p class="text-xs text-slate-500">Sila isi borang pendaftaran untuk mengesahkan kehadiran anda.</p>
+                            </div>
+                        </div>
+                        <button onclick="switchTab('kehadiran')" class="bg-amber-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-amber-700">
+                            Daftar Sekarang
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function clearRegistration() {
+            if(confirm("Adakah anda pasti untuk mendaftar semula? Data terdahulu akan dipadamkan.")) {
+                localStorage.removeItem('kkmSeminarUser');
+                checkExistingRegistration();
+                switchTab('kehadiran');
+            }
+        }
+
+        // Print function
+        function printArea() {
+            window.print();
+        }
+
+        // Rating Feedback Handler
+        function setRating(val) {
+            selectedRating = val;
+            const stars = document.querySelectorAll('.star-btn');
+            const ratingText = document.getElementById('ratingValueText');
+
+            stars.forEach((star, idx) => {
+                if (idx < val) {
+                    star.classList.remove('text-slate-300');
+                    star.classList.add('text-amber-400');
+                } else {
+                    star.classList.remove('text-amber-400');
+                    star.classList.add('text-slate-300');
+                }
             });
 
-            const targetSection = document.getElementById(`sec-${tabId}`);
-            if (targetSection) targetSection.classList.remove('hidden');
-
-            const activeBtn = document.getElementById(`tab-${tabId}`);
-            if (activeBtn) {
-                activeBtn.classList.add('border-blue-900', 'text-blue-900', 'bg-blue-50/50');
-                activeBtn.classList.remove('border-transparent');
-            }
+            const labels = ["Sangat Lemah", "Kurang Memuaskan", "Sederhana", "Baik", "Sangat Cemerlang!"];
+            ratingText.textContent = `${val} / 5 - ${labels[val - 1]}`;
         }
 
-        // Schedule Day Switcher
-        function filterDay(day) {
-            if (day === 1) {
-                document.getElementById('schedule-day1').classList.remove('hidden');
-                document.getElementById('schedule-day2').classList.add('hidden');
-                document.getElementById('btn-day1').className = "flex-1 py-2.5 rounded-lg bg-blue-900 text-white shadow";
-                document.getElementById('btn-day2').className = "flex-1 py-2.5 rounded-lg text-slate-700 hover:bg-slate-300";
-            } else {
-                document.getElementById('schedule-day1').classList.add('hidden');
-                document.getElementById('schedule-day2').classList.remove('hidden');
-                document.getElementById('btn-day2').className = "flex-1 py-2.5 rounded-lg bg-blue-900 text-white shadow";
-                document.getElementById('btn-day1').className = "flex-1 py-2.5 rounded-lg text-slate-700 hover:bg-slate-300";
-            }
-        }
-
-        // Hantar Pendaftaran Kehadiran
-        async function handleRegistrationSubmit(e) {
+        function handleFeedback(e) {
             e.preventDefault();
-            const btn = document.getElementById('btnSubmit');
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Sedang Menyimpan Data...`;
-
-            const payload = {
-                nama: document.getElementById('regName').value,
-                ic: document.getElementById('regIC').value,
-                email: document.getElementById('regEmail').value,
-                jawatan: document.getElementById('regRole').value,
-                jabatan: document.getElementById('regDept').value,
-                hari: document.getElementById('regDay').value
-            };
-
-            // Simpan dalam storage tempatan PWA
-            localStorage.setItem('kkm_registered_user', JSON.stringify(payload));
-
-            // Hantar terus ke Google Sheets / Drive
-            if (GOOGLE_SCRIPT_URL) {
-                try {
-                    await fetch(GOOGLE_SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    alert("Kehadiran berjaya dihantar dan disimpan ke Google Sheets!");
-                } catch (err) {
-                    console.error(err);
-                    alert("Gagal berhubung dengan Google Sheets, data disimpan secara tempatan.");
-                }
+            if (selectedRating === 0) {
+                alert("Sila pilih penilaian bintang terlebih dahulu.");
+                return;
             }
 
-            btn.disabled = false;
-            btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Hantar & Simpan Kehadiran`;
-            renderPassData();
-            showTab('pas');
+            document.getElementById('feedbackForm').classList.add('hidden');
+            document.getElementById('fbSuccessMsg').classList.remove('hidden');
         }
 
-        // Hantar Maklum Balas
-        async function handleFeedbackSubmit(e) {
+        // PWA Service Worker Registration
+        function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                const swCode = `
+                    const CACHE_NAME = 'kkm-seminar-v1';
+                    self.addEventListener('install', e => {
+                        e.waitUntil(
+                            caches.open(CACHE_NAME).then(cache => {
+                                return cache.addAll(['./']);
+                            })
+                        );
+                    });
+                    self.addEventListener('fetch', e => {
+                        e.respondWith(
+                            caches.match(e.request).then(response => response || fetch(e.request))
+                        );
+                    });
+                `;
+                const blob = new Blob([swCode], { type: 'text/javascript' });
+                const swUrl = URL.createObjectURL(blob);
+
+                navigator.serviceWorker.register(swUrl)
+                    .then(() => console.log('PWA Service Worker Registered Successfully.'))
+                    .catch(err => console.log('SW Registration failed:', err));
+            }
+        }
+
+        // PWA Install Prompt Handler
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
-            const btn = document.getElementById('btnFbSubmit');
-            btn.disabled = true;
+            deferredPrompt = e;
+            const btn = document.getElementById('btnInstallPwa');
+            if (btn) btn.classList.remove('hidden');
+        });
 
-            const user = JSON.parse(localStorage.getItem('kkm_registered_user') || '{}');
-            const payload = {
-                ...user,
-                rating: document.getElementById('fbRating').value,
-                ulasan: document.getElementById('fbComment').value
-            };
-
-            if (GOOGLE_SCRIPT_URL) {
-                try {
-                    await fetch(GOOGLE_SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    alert("Terima kasih atas maklum balas anda!");
-                    document.getElementById('fbComment').value = "";
-                } catch (err) {
-                    alert("Ralat menghantar maklum balas.");
-                }
-            }
-            btn.disabled = false;
-        }
-
-        // Paparkan Pas Digital apabila pendaftaran selesai
-        function renderPassData() {
-            const user = JSON.parse(localStorage.getItem('kkm_registered_user'));
-            if (user) {
-                document.getElementById('no-pass-alert').classList.add('hidden');
-                document.getElementById('pass-card-container').classList.remove('hidden');
-                document.getElementById('pass-name').innerText = user.nama;
-                document.getElementById('pass-role-dept').innerText = `${user.jawatan} | ${user.jabatan}`;
-                document.getElementById('pass-day').innerText = `Sesi Kehadiran: ${user.hari}`;
-
-                document.getElementById('qrcode').innerHTML = "";
-                new QRCode(document.getElementById('qrcode'), {
-                    text: `KKM2026|${user.ic}|${user.nama}`,
-                    width: 140,
-                    height: 140
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted PWA installation');
+                    }
+                    deferredPrompt = null;
                 });
             }
         }
-
-        // Semak status offline / online
-        window.addEventListener('online', () => {
-            document.getElementById('app-status').className = "text-[10px] bg-emerald-500 text-white font-semibold px-2.5 py-1 rounded-full flex items-center gap-1 shadow";
-            document.getElementById('app-status').innerHTML = `<span class="w-1.5 h-1.5 bg-white rounded-full animate-ping"></span> App Ready`;
-        });
-        window.addEventListener('offline', () => {
-            document.getElementById('app-status').className = "text-[10px] bg-amber-500 text-white font-semibold px-2.5 py-1 rounded-full flex items-center gap-1 shadow";
-            document.getElementById('app-status').innerHTML = `Mod Offline`;
-        });
-
-        // Register Service Worker
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(() => {});
-        }
-
-        window.onload = renderPassData;
     </script>
+    // Gantikan dengan URL Apps Script baharu yang telah anda deploy
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwuAi90uvhRtXPh1sW9L4nwaClPimg14x8sQeI6pbsdWJ9lQ4VmwRskm0iAejnYrHXb/exec";
+
+// Tambah fungsi ini di bahagian bawah script pendaftaran borang asal anda
+async function hantarKeGoogleSheets(formData) {
+  if (GOOGLE_SCRIPT_URL) {
+    try {
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      console.log("Data berjaya masuk ke Google Sheet!");
+    } catch (e) {
+      console.error(e);
+    }
+  }
+}
 </body>
 </html>
