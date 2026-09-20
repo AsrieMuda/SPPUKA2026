@@ -1,0 +1,21 @@
+{
+  "name": "Kehadiran Seminar KKM 2026",
+  "short_name": "PWA KKM",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1e3a8a",
+  "theme_color": "#1e3a8a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/1484/1484831.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/1484/1484831.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
