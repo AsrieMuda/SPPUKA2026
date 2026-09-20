@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PWA Kehadiran Seminar KKM 2026</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1e3a8a">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-blue-900 text-white p-4 shadow-lg sticky top-0 z-50">
+        <div class="max-w-md mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-white p-1 rounded">
+                    <span class="text-blue-900 font-bold text-lg">KKM</span>
+                </div>
+                <div>
+                    <h1 class="font-bold text-sm leading-tight">Seminar Penguatkuasaan 2026</h1>
+                    <p class="text-xs text-blue-200">Kesihatan Awam | 21-22 Sept 2026</p>
+                </div>
+            </div>
+            <button onclick="toggleOfflineStatus()" id="status-badge" class="text-xs bg-green-500 text-white px-2 py-1 rounded-full">Online</button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-md w-full mx-auto p-4 space-y-4">
+
+        <!-- Tab Navigasi -->
+        <div class="grid grid-cols-3 gap-1 bg-slate-200 p-1 rounded-lg text-center text-xs font-semibold">
+            <button onclick="switchTab('daftar')" id="tab-daftar" class="py-2 rounded-md bg-blue-900 text-white shadow">Pendaftaran</button>
+            <button onclick="switchTab('pas')" id="tab-pas" class="py-2 rounded-md text-slate-600">Pas / Sijil</button>
+            <button onclick="switchTab('maklumbalas')" id="tab-maklumbalas" class="py-2 rounded-md text-slate-600">Maklum Balas</button>
+        </div>
+
+        <!-- Section 1: Pendaftaran Kehadiran -->
+        <section id="sec-daftar" class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+            <h2 class="text-lg font-bold text-blue-900 mb-3 border-b pb-2">Borang Kehadiran Peserta</h2>
+            <form onsubmit="registerParticipant(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Penuh</label>
+                    <input type="text" id="regName" required placeholder="Cth: Dr. Ahmad Bin Ali" class="w-full p-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">No. Kad Pengenalan</label>
+                    <input type="text" id="regIC" required placeholder="Cth: 880101015555" class="w-full p-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">E-mel</label>
+                    <input type="email" id="regEmail" required placeholder="ahmad@moh.gov.my" class="w-full p-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Jawatan</label>
+                        <input type="text" id="regRole" required placeholder="PPKP / Pegawai" class="w-full p-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Jabatan / JKN</label>
+                        <input type="text" id="regDept" required placeholder="JKN Perak" class="w-full p-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Sesi Kehadiran</label>
+                    <select id="regDay" class="w-full p-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                        <option value="Hari 1 (21 Sept 2026)">Hari 1 - 21 Sept 2026</option>
+                        <option value="Hari 2 (22 Sept 2026)">Hari 2 - 22 Sept 2026</option>
+                        <option value="Kedua-dua Hari">Kedua-dua Hari</option>
+                    </select>
+                </div>
+                <button type="submit" id="btnSubmit" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-2.5 rounded-lg shadow transition text-sm">
+                    Hantar & Simpan Kehadiran
+                </button>
+            </form>
+        </section>
+
+        <!-- Section 2: Pas digital & Bukti Kehadiran -->
+        <section id="sec-pas" class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 hidden">
+            <h2 class="text-lg font-bold text-blue-900 mb-3 border-b pb-2">Pas Kehadiran Digital</h2>
+            <div id="no-pass-msg" class="text-center py-8 text-slate-500 text-sm">
+                Sila isi borang pendaftaran terlebih dahulu untuk menjana pas kehadiran.
+            </div>
+            <div id="pass-card" class="hidden text-center space-y-4">
+                <div class="border-2 border-dashed border-blue-900 p-4 rounded-xl bg-blue-50/50">
+                    <span class="inline-block bg-blue-900 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2">BUKTI KEHADIRAN SAH</span>
+                    <h3 id="pass-name" class="font-bold text-blue-950 text-base"></h3>
+                    <p id="pass-dept" class="text-xs text-slate-600 mb-3"></p>
+                    <div id="qrcode" class="flex justify-center my-3"></div>
+                    <p id="pass-day" class="text-xs font-semibold text-blue-800"></p>
+                </div>
+                <button onclick="window.print()" class="w-full border border-blue-900 text-blue-900 font-semibold py-2 rounded-lg text-xs hover:bg-blue-50">
+                    Cetak / Simpan Sebagai PDF
+                </button>
+            </div>
+        </section>
+
+        <!-- Section 3: Borang Maklum Balas -->
+        <section id="sec-maklumbalas" class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 hidden">
+            <h2 class="text-lg font-bold text-blue-900 mb-3 border-b pb-2">Penilaian & Maklum Balas</h2>
+            <form onsubmit="submitFeedback(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Penilaian Keseluruhan Seminar</label>
+                    <select id="fbRating" class="w-full p-2 border rounded-lg text-sm outline-none">
+                        <option value="5">Cemerlang (5/5)</option>
+                        <option value="4">Sangat Baik (4/5)</option>
+                        <option value="3">Baik (3/5)</option>
+                        <option value="2">Sederhana (2/5)</option>
+                        <option value="1">Memerlukan Penambahbaikan (1/5)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Ulasan / Cadangan Penambahbaikan</label>
+                    <textarea id="fbComment" rows="3" required placeholder="Berikan ulasan anda berkenaan penceramah, pengurusan atau tajuk..." class="w-full p-2 border rounded-lg text-sm outline-none"></textarea>
+                </div>
+                <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 rounded-lg shadow text-sm">
+                    Hantar Maklum Balas
+                </button>
+            </form>
+        </section>
+
+    </main>
+
+    <!-- Footer Script & Logic -->
+    <script>
+        // 🛑 PASTE URL GOOGLE APPS SCRIPT ANDA DI SINI!
+        const GOOGLE_SCRIPT_URL = "URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI";
+
+        // Mendaftar Service Worker untuk PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').then(() => console.log('SW Registered'));
+        }
+
+        function switchTab(tab) {
+            ['daftar', 'pas', 'maklumbalas'].forEach(t => {
+                document.getElementById(`sec-${t}`).classList.add('hidden');
+                document.getElementById(`tab-${t}`).className = "py-2 rounded-md text-slate-600";
+            });
+            document.getElementById(`sec-${tab}`).classList.remove('hidden');
+            document.getElementById(`tab-${tab}`).className = "py-2 rounded-md bg-blue-900 text-white shadow";
+        }
+
+        async function registerParticipant(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmit');
+            btn.innerText = "Sedang Menyimpan...";
+            btn.disabled = true;
+
+            const data = {
+                nama: document.getElementById('regName').value,
+                ic: document.getElementById('regIC').value,
+                email: document.getElementById('regEmail').value,
+                jawatan: document.getElementById('regRole').value,
+                jabatan: document.getElementById('regDept').value,
+                hari: document.getElementById('regDay').value
+            };
+
+            // Simpan tempatan dahulu
+            localStorage.setItem('kkm_user', JSON.stringify(data));
+
+            // Hantar ke Google Sheets
+            if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI") {
+                try {
+                    await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    alert('Kehadiran berjaya direkodkan ke Google Drive/Sheets!');
+                } catch (err) {
+                    alert('Data disimpan secara tempatan (Offline).');
+                }
+            } else {
+                alert('Berjaya disimpan secara tempatan! (Sila kemaskini URL Google Script dalam kod).');
+            }
+
+            btn.innerText = "Hantar & Simpan Kehadiran";
+            btn.disabled = false;
+            loadPassData();
+            switchTab('pas');
+        }
+
+        async function submitFeedback(e) {
+            e.preventDefault();
+            const user = JSON.parse(localStorage.getItem('kkm_user') || '{}');
+            const data = {
+                ...user,
+                rating: document.getElementById('fbRating').value,
+                ulasan: document.getElementById('fbComment').value
+            };
+
+            if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "https://script.google.com/a/macros/moh.gov.my/s/AKfycbxSy1NhhH9TmwatYV3PAYEGC4Y0bOzLwzA8Id06zkPZbX5-FsoOZTxrEQjd5zO105_I/exec") {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+            }
+            alert('Terima kasih atas maklum balas anda!');
+            document.getElementById('fbComment').value = '';
+        }
+
+        function loadPassData() {
+            const user = JSON.parse(localStorage.getItem('kkm_user'));
+            if (user) {
+                document.getElementById('no-pass-msg').classList.add('hidden');
+                document.getElementById('pass-card').classList.remove('hidden');
+                document.getElementById('pass-name').innerText = user.nama;
+                document.getElementById('pass-dept').innerText = `${user.jawatan} - ${user.jabatan}`;
+                document.getElementById('pass-day').innerText = `Sesi: ${user.hari}`;
+
+                // Jana QR Code
+                document.getElementById("qrcode").innerHTML = "";
+                new QRCode(document.getElementById("qrcode"), {
+                    text: `KKM2026|${user.ic}|${user.nama}`,
+                    width: 128,
+                    height: 128
+                });
+            }
+        }
+
+        // Semak rekod lalu apabila aplikasi dibuka
+        window.onload = loadPassData;
+    </script>
+</body>
+</html>
