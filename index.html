@@ -101,29 +101,38 @@
 <body class="text-slate-800 bg-slate-100 min-h-screen flex flex-col justify-between">
 
     <!-- Top Header -->
-    <header class="bg-gradient-to-r from-kkmNavy via-kkmBlue to-slate-900 text-white shadow-xl sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('utama')">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Coat_of_arms_of_Malaysia.svg/250px-Coat_of_arms_of_Malaysia.svg.png" 
-                     alt="JSN Malaysia" 
-                     class="h-12 w-auto filter drop-shadow"
-                     onerror="this.src='https://placehold.co/100x100/1e3a8a/ffffff?text=KKM'">
-                <div>
-                    <h1 class="text-xs sm:text-sm font-bold tracking-wider text-amber-400 uppercase">Kementerian Kesihatan Malaysia</h1>
-                    <p class="text-xs text-slate-200 font-medium hidden sm:block">Bahagian Perkembangan Kesihatan Awam</p>
-                </div>
-            </div>
-
-            <!-- Install PWA & Status Badge -->
-            <div class="flex items-center space-x-2">
-                <span id="pwaStatus" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                    <span class="w-2 h-2 mr-1.5 bg-emerald-400 rounded-full animate-pulse"></span> App Ready
-                </span>
-                <button id="btnInstallPwa" onclick="installPWA()" class="hidden bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center shadow transition transform active:scale-95">
-                    <i class="fas fa-download mr-1.5"></i> Pasang PWA
-                </button>
+   <!-- Top Header Rasmi KKM -->
+<header class="bg-gradient-to-r from-kkmNavy via-kkmBlue to-slate-900 text-white shadow-xl sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('utama')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Coat_of_arms_of_Malaysia.svg/250px-Coat_of_arms_of_Malaysia.svg.png" 
+                 alt="JSN Malaysia" 
+                 class="h-12 w-auto filter drop-shadow"
+                 onerror="this.src='https://via.placeholder.com/100x100/1e3a8a/ffffff?text=KKM'">
+            <div>
+                <h1 class="text-xs sm:text-sm font-bold tracking-wider text-amber-400 uppercase leading-tight">Kementerian Kesihatan Malaysia</h1>
+                <p class="text-xs text-slate-200 font-medium hidden sm:block leading-tight">Bahagian Perkembangan Kesihatan Awam</p>
             </div>
         </div>
+
+        <!-- Install PWA & Status Badge -->
+        <div class="flex items-center space-x-2">
+            <span id="pwaStatus" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                <span class="w-2 h-2 mr-1.5 bg-emerald-400 rounded-full animate-pulse"></span> App Ready
+            </span>
+            <button id="btnInstallPwa" onclick="installPWA()" class="hidden bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center shadow transition transform active:scale-95">
+                <i class="fas fa-download mr-1.5"></i> Pasang PWA
+            </button>
+        </div>
+    </div>
+
+    <!-- Sub-Header Tajuk Seminar -->
+    <div class="bg-slate-950/60 py-1.5 px-4 text-center border-t border-slate-700/50">
+        <p class="text-[11px] sm:text-xs font-bold text-amber-400 uppercase tracking-widest">
+            SEMINAR PENGUATKUASAAN DAN PENDAKWAAN UNDANG-UNDANG KESIHATAN AWAM TAHUN 2026
+        </p>
+    </div>
+</header>
 
         <!-- Banner Info Title -->
         <div class="bg-slate-950/40 border-t border-white/10 py-2 px-4 text-center">
