@@ -917,7 +917,7 @@
         }
 
         // Attendance Registration Handler
-        async function handleRegister(e) {
+        function handleRegister(e) {
             e.preventDefault();
 
             const nama = document.getElementById('regNama').value.toUpperCase().trim();
@@ -938,36 +938,10 @@
                 registeredAt: new Date().toLocaleDateString('ms-MY')
             };
 
-            const submitBtn = e.submitter || e.target.querySelector('button[type="submit"]');
-            const oldBtnHtml = submitBtn ? submitBtn.innerHTML : "";
-
-            try {
-                if (submitBtn) {
-                    submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan Kehadiran...';
-                }
-
-                // Hantar rekod yang SAMA seperti yang digunakan untuk Pas & Sijil
-                await hantarKeGoogleSheets({
-                    action: "attendance",
-                    ...participantData
-                });
-
-                // Simpan pada peranti hanya selepas permintaan penghantaran dibuat
-                localStorage.setItem('kkmSeminarUser', JSON.stringify(participantData));
-
-                checkExistingRegistration();
-                switchTab('bukti');
-
-            } catch (error) {
-                console.error("Ralat simpan ke Google Sheets:", error);
-                alert("Kehadiran belum berjaya dihantar. Sila semak sambungan internet dan cuba semula.");
-            } finally {
-                if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = oldBtnHtml;
-                }
-            }
+            localStorage.setItem('kkmSeminarUser', JSON.stringify(participantData));
+            
+            checkExistingRegistration();
+            switchTab('bukti');
         }
 
         // Check LocalStorage Registration Status
@@ -1132,31 +1106,49 @@
                 });
             }
         }
-    </script>
-
-    <!-- Sambungan PWA -> Google Apps Script -> Google Sheets -->
+         <!-- Script Pengendali PWA & Google Sheets -->
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwuAi90uvhRtXPh1sW9L4nwaClPimg14x8sQeI6pbsdWJ9lQ4VmwRskm0iAejnYrHXb/exec";
+        // URL Web App Google Apps Script anda
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwuAI90uvhRtXPh1sW9L4nwaClPImg14x8sQeI6pbsdWS9IQ4VmwRskm0IAejnYrHXb/exec";
 
+        // Fungsi Utama Hantar Data Ke Google Sheets
         async function hantarKeGoogleSheets(formData) {
-            if (!GOOGLE_SCRIPT_URL) {
-                throw new Error("GOOGLE_SCRIPT_URL belum ditetapkan.");
+            if (!GOOGLE_SCRIPT_URL) return;
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                console.log("Data berjaya dihantar ke Google Sheets!");
+            } catch (error) {
+                console.error("Ralat penghantaran:", error);
             }
-
-            /*
-             * mode:no-cors sesuai untuk penghantaran ringkas dari GitHub Pages
-             * ke Google Apps Script Web App. Gunakan text/plain supaya browser
-             * tidak membuat CORS preflight untuk JSON.
-             */
-            await fetch(GOOGLE_SCRIPT_URL, {
-                method: "POST",
-                mode: "no-cors",
-                headers: {
-                    "Content-Type": "text/plain;charset=utf-8"
-                },
-                body: JSON.stringify(formData)
-            });
         }
+
+        // Cari borang pendaftaran dan kaitkan dengan fungsi penghantaran
+        document.addEventListener("DOMContentLoaded", function() {
+            // Cari elemen borang pendaftaran dalam HTML anda
+            const regForm = document.querySelector("form");
+            
+            if (regForm) {
+                regForm.addEventListener("submit", function(event) {
+                    // Ambil nilai data dari borang secara automatik
+                    const formData = {
+                        nama: document.getElementById('regName')?.value || document.querySelector('input[name="nama"]')?.value || "",
+                        ic: document.getElementById('regIC')?.value || document.querySelector('input[name="ic"]')?.value || "",
+                        email: document.getElementById('regEmail')?.value || document.querySelector('input[name="email"]')?.value || "",
+                        jawatan: document.getElementById('regRole')?.value || document.querySelector('input[name="jawatan"]')?.value || "",
+                        jabatan: document.getElementById('regDept')?.value || document.querySelector('input[name="jabatan"]')?.value || "",
+                        hari: document.getElementById('regDay')?.value || document.querySelector('select[name="hari"]')?.value || ""
+                    };
+
+                    // Panggil fungsi hantar ke Google Sheets
+                    hantarKeGoogleSheets(formData);
+                });
+            }
+        });
     </script>
 </body>
 </html>
