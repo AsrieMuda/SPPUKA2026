@@ -7,6 +7,25 @@
     
     <!-- PWA Manifest Dynamic Injector -->
     <script>
+        // 1. Tampal URL dari Fasa 2 di sini
+const GOOGLE_SCRIPT_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbxSy1NhhH9TmwatYV3PAYEGC4Y0bOzLwzA8Id06zkPZbX5-FsoOZTxrEQjd5zO105_I/exec";
+
+// 2. Tambah fungsi penghantaran ini ke Google Sheets
+async function hantarKeGoogleSheets(formData) {
+    if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "https://script.google.com/a/macros/moh.gov.my/s/AKfycbxSy1NhhH9TmwatYV3PAYEGC4Y0bOzLwzA8Id06zkPZbX5-FsoOZTxrEQjd5zO105_I/exec") {
+        try {
+            await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+            console.log("Data berjaya dihantar ke Google Sheets!");
+        } catch (error) {
+            console.error("Ralat penghantaran:", error);
+        }
+    }
+}
         const manifestData = {
             "name": "Seminar Penguatkuasaan KKM 2026",
             "short_name": "Seminar KKM 2026",
