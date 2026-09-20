@@ -630,6 +630,7 @@
         <div class="max-w-7xl mx-auto space-y-2">
             <p class="font-semibold text-slate-300">SEKTOR INSPEKTORAT DAN PERUNDANGAN | BAHAGIAN PERKEMBANGAN KESIHATAN AWAM</p>
             <p>Kementerian Kesihatan Malaysia © 2026. Hak Cipta Terpelihara.</p>
+            <p class="text-[9px] text-slate-500">BUILD: RECOVERY-3 • 20-09-2026</p>
         </div>
     </footer>
 
@@ -813,7 +814,9 @@
             renderSchedule(1);
             renderAJK();
             checkExistingRegistration();
-            registerServiceWorker();
+            clearLegacyPwaCache();
+            const status = document.getElementById('pwaStatus');
+            if (status) status.innerHTML = '<span class="w-2 h-2 mr-1.5 bg-emerald-400 rounded-full"></span> JS OK • RECOVERY 3';
         });
 
         // Tab Switching Logic
@@ -1085,30 +1088,28 @@
             document.getElementById('fbSuccessMsg').classList.remove('hidden');
         }
 
-        // PWA Service Worker Registration
-        function registerServiceWorker() {
-            if ('serviceWorker' in navigator) {
-                const swCode = `
-                    const CACHE_NAME = 'kkm-seminar-v1';
-                    self.addEventListener('install', e => {
-                        e.waitUntil(
-                            caches.open(CACHE_NAME).then(cache => {
-                                return cache.addAll(['./']);
-                            })
-                        );
-                    });
-                    self.addEventListener('fetch', e => {
-                        e.respondWith(
-                            caches.match(e.request).then(response => response || fetch(e.request))
-                        );
-                    });
-                `;
-                const blob = new Blob([swCode], { type: 'text/javascript' });
-                const swUrl = URL.createObjectURL(blob);
+        // Recovery: remove any legacy service worker / cache that may serve an old broken build
+        async function clearLegacyPwaCache() {
+            try {
+                if ('serviceWorker' in navigator) {
+                    const regs = await navigator.serviceWorker.getRegistrations();
+                    for (const reg of regs) {
+                        await reg.unregister();
+                    }
+                }
 
-                navigator.serviceWorker.register(swUrl)
-                    .then(() => console.log('PWA Service Worker Registered Successfully.'))
-                    .catch(err => console.log('SW Registration failed:', err));
+                if ('caches' in window) {
+                    const keys = await caches.keys();
+                    for (const key of keys) {
+                        if (key.startsWith('kkm-seminar')) {
+                            await caches.delete(key);
+                        }
+                    }
+                }
+
+                console.log('Legacy PWA cache cleared.');
+            } catch (err) {
+                console.warn('Cache cleanup skipped:', err);
             }
         }
 
@@ -1132,11 +1133,23 @@
                 });
             }
         }
+        // Explicit globals for inline onclick / onsubmit handlers
+        window.switchTab = switchTab;
+        window.filterDay = filterDay;
+        window.handleRegister = handleRegister;
+        window.clearRegistration = clearRegistration;
+        window.printArea = printArea;
+        window.setRating = setRating;
+        window.handleFeedback = handleFeedback;
+        window.installPWA = installPWA;
+        window.clearLegacyPwaCache = clearLegacyPwaCache;
+
+        console.log('SPPUKA2026 RECOVERY 3 JavaScript loaded.');
     </script>
 
     <!-- Sambungan PWA -> Google Apps Script -> Google Sheets -->
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwuAi90uvhRtXPh1sW9L4nwaClPimg14x8sQeI6pbsdWJ9lQ4VmwRskm0iAejnYrHXb/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzCRvDxtK9AIiUQyOWA0e2CSf-wVOwhijcjA-r8f4KNVb8Uisk504jd0p0XQlgak7Rn/exec";
 
         async function hantarKeGoogleSheets(formData) {
             if (!GOOGLE_SCRIPT_URL) {
